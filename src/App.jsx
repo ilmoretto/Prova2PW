@@ -11,7 +11,7 @@ function App() {
   // Função para buscar pokemon por nome completo ou iniciais
   const buscarPokemon = async (nome) => {
     if (!nome) {
-      setErro('Por favor digite um nome de pokemon') // bug: falta vírgula após "favor"
+      setErro('Por favor, digite um nome de pokemon') // bug: falta vírgula após "favor"
       return
     }
 
@@ -32,17 +32,17 @@ function App() {
 
         const listData = await listResponse.json()
         const pokemonEncontrado = listData.results.find(p =>
-          p.name.toLowerCase().startsWith(nome.toLowerCase()) // bug: poderia usar includes() para busca mais flexível
+          p.name.toLowerCase().includes(nome.toLowerCase()) // bug: poderia usar includes() para busca mais flexível (resolvido)
         )
 
         if (!pokemonEncontrado) {
-          throw new Error('Pokemon não encontrado!')
+          throw new Error('Pokémon não encontrado!')
         }
 
         // Busca os dados completos do pokemon encontrado
         response = await fetch(pokemonEncontrado.url)
         if (!response.ok) {
-          throw new Error('Erro ao buscar dados do pokemon')
+          throw new Error('Erro ao buscar dados do pokémon')
         }
       }
 
@@ -50,7 +50,7 @@ function App() {
       setPokemonn(data)
       console.log(pokemonn) // bug crítico: tentando usar variável antes de atualizar estado - retorna null
     } catch (err) {
-      setErro(err.message || 'Erro ao buscar pokemon')
+      setErro(err.message || 'Erro ao buscar pokémon')
       setPokemonn(null)
     } finally {
       setLoading(false)
@@ -58,11 +58,12 @@ function App() {
   }
 
   // Buscar quando o termo de pesquisa mudar (bug: vai buscar toda vez que digitar!)
-  useEffect(() => {
+  /*useEffect(() => {
     if (serchTerm) {
       buscarPokemon(serchTerm)
     }
   }, [serchTerm]) // bug: falta adicionar buscarPokemon nas dependencias
+*/ //O formulário já funciona corretamente sem o useEffect!
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -72,8 +73,8 @@ function App() {
   return (
     <div className="app-container"> {/* bug crítico: verificar se todas as tags estão fechadas */}
       <header className="header">
-        <h1 className="titulo-principal">🔍 Buscador de Pokemon</h1>
-        <p className="subtitulo">Encontre seu Pokemon favorito!</p>
+        <h1 className="titulo-principal">🔍 Buscador de Pokémon</h1>
+        <p className="subtitulo">Encontre seu Pokémon favorito!</p>
         {/* bug: falta acentuação em Pokémon */}
       </header>
 
@@ -111,7 +112,7 @@ function App() {
 
         {!pokemonn && !loading && !erro && (
       <div className="welcome-message">
-        <p>👋 Bem vindo! Digite o nome de um Pokemon para começar.</p>
+        <p>👋 Bem-vindo! Digite o nome de um Pokémon para começar.</p>
         {/* bug: "Bem vindo" deveria ser "Bem-vindo" */}
       </div>
       )}
